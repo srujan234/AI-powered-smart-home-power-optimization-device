@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard — PowerMind AI</title>
+  <link rel="stylesheet" href="../css/dashboard.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div class="sidebar-logo">⚡ PowerMind<span>AI</span><small>Smart Energy Dashboard</small></div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Overview</div>
+      <ul class="sidebar-nav">
+        <li class="active"><a href="#" data-tab="overview"><span class="nav-icon">🏠</span> Overview</a></li>
+        <li><a href="#" data-tab="monitor"><span class="nav-icon">📡</span> Live Monitor</a></li>
+        <li><a href="#" data-tab="predictions"><span class="nav-icon">🔮</span> AI Predictions</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Control</div>
+      <ul class="sidebar-nav">
+        <li><a href="#" data-tab="devices"><span class="nav-icon">🎛️</span> Device Panel</a></li>
+        <li><a href="#" data-tab="schedule"><span class="nav-icon">🗓️</span> Scheduler</a></li>
+        <li><a href="#" data-tab="alerts"><span class="nav-icon">🚨</span> Alerts</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Reports</div>
+      <ul class="sidebar-nav">
+        <li><a href="#" data-tab="reports"><span class="nav-icon">📈</span> Weekly Reports</a></li>
+        <li><a href="#" data-tab="carbon"><span class="nav-icon">🌱</span> Carbon Tracker</a></li>
+        <li><a href="#" data-tab="waste"><span class="nav-icon">🔥</span> Power Waste Analyzer</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-status">
+      <span class="status-dot"></span>
+      <span class="status-text">Device Online · Last sync 3s ago</span>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div>
+        <div class="topbar-title" id="topbar-title">Overview</div>
+        <div class="topbar-sub">Sunday, March 22 · Hyderabad · ☀️ 34°C</div>
+      </div>
+      <div class="topbar-right">
+        <div class="alert-bell" id="bell-btn">🔔<span class="alert-badge">3</span></div>
+        <div class="avatar">PM</div>
+      </div>
+    </header>
+
+    <div class="notif-panel" id="notif-panel">
+      <div class="notif-header">Notifications<button class="notif-clear" id="notif-clear">Clear all</button></div>
+      <div class="notif-list" id="notif-list"></div>
+    </div>
+
+    <div class="content">
+
+      <!-- ══ OVERVIEW TAB ══ -->
+      <div class="tab-panel active" id="tab-overview">
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-label">Live Consumption</div>
+            <div class="kpi-value accent" id="kpi-now">3.2 kW</div>
+            <div class="kpi-change up">↓ 18% vs yesterday</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Today's Cost</div>
+            <div class="kpi-value warn" id="kpi-cost">₹142</div>
+            <div class="kpi-change up">↓ ₹31 saved today</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Monthly Forecast</div>
+            <div class="kpi-value info">₹3,840</div>
+            <div class="kpi-change up">↓ ₹360 vs last month</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">CO₂ Today</div>
+            <div class="kpi-value green">1.4 kg</div>
+            <div class="kpi-change up">↓ 22% below avg</div>
+          </div>
+        </div>
+        <div class="row row-2">
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">24-Hour Consumption</span>
+              <span class="card-badge live">● LIVE</span>
+            </div>
+            <div class="chart-wrap"><canvas id="live-chart"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Anomaly Alerts</span>
+              <span class="card-badge danger">3 Active</span>
+            </div>
+            <div class="alerts-list" id="alerts-list"></div>
+          </div>
+        </div>
+        <div class="row row-3">
+          <div class="card">
+            <div class="card-header"><span class="card-title">AI Predictions</span></div>
+            <div class="prediction-grid">
+              <div class="pred-card"><div class="pred-icon">🔮</div><div class="pred-val">22.4 kWh</div><div class="pred-lbl">Predicted Today</div></div>
+              <div class="pred-card"><div class="pred-icon">💰</div><div class="pred-val">₹190</div><div class="pred-lbl">Predicted Cost</div></div>
+              <div class="pred-card"><div class="pred-icon">📅</div><div class="pred-val">18.9 kWh</div><div class="pred-lbl">Predicted Tomorrow</div></div>
+              <div class="pred-card"><div class="pred-icon">🌡️</div><div class="pred-val">High AC</div><div class="pred-lbl">Peak Load Driver</div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Monthly Goal</span></div>
+            <div class="goal-item">
+              <div class="goal-header"><span class="goal-label">Energy Reduction</span><span class="goal-pct">68%</span></div>
+              <div class="progress-bar-bg"><div class="progress-bar" data-width="68%" style="width:0"></div></div>
+              <div class="goal-meta">Target: 20% less than last month · 12 days left</div>
+            </div>
+            <div class="goal-item">
+              <div class="goal-header"><span class="goal-label">Bill Target ₹3,500</span><span class="goal-pct">83%</span></div>
+              <div class="progress-bar-bg"><div class="progress-bar warn" data-width="83%" style="width:0"></div></div>
+              <div class="goal-meta">Current projection: ₹3,840 · On edge</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Carbon Footprint</span></div>
+            <div class="carbon-meter">
+              <div class="carbon-circle">
+                <div class="carbon-inner"><div class="carbon-val">1.4 kg</div><div class="carbon-unit">CO₂ Today</div></div>
+              </div>
+              <div class="carbon-compare">Monthly: 42 kg · <span>22% below avg</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ LIVE MONITOR TAB ══ -->
+      <div class="tab-panel" id="tab-monitor">
+        <h2 style="font-family:var(--font-head);margin-bottom:24px">📡 Live Energy Monitor</h2>
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-label">Active Devices</div>
+            <div class="kpi-value accent" id="kpi-active-devices">5</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Peak Load</div>
+            <div class="kpi-value warn">4.1 kW</div>
+            <div class="kpi-change">at 7:32 PM</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Total Today</div>
+            <div class="kpi-value info">18.7 kWh</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Grid Frequency</div>
+            <div class="kpi-value green">50.0 Hz</div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:20px">
+          <div class="card-header">
+            <span class="card-title">This Week vs Last Week</span>
+          </div>
+          <div class="chart-wrap" style="height:260px"><canvas id="week-chart"></canvas></div>
+        </div>
+      </div>
+
+      <!-- ══ AI PREDICTIONS TAB ══ -->
+      <div class="tab-panel" id="tab-predictions">
+        <h2 style="font-family:var(--font-head);margin-bottom:24px">🔮 AI Usage Predictions</h2>
+        <div class="kpi-grid">
+          <div class="kpi-card"><div class="kpi-label">Forecast Accuracy</div><div class="kpi-value accent">94%</div></div>
+          <div class="kpi-card"><div class="kpi-label">Tomorrow's Usage</div><div class="kpi-value info">18.9 kWh</div></div>
+          <div class="kpi-card"><div class="kpi-label">Best Save Window</div><div class="kpi-value green">11PM–6AM</div></div>
+          <div class="kpi-card"><div class="kpi-label">Model Updated</div><div class="kpi-value warn">2h ago</div></div>
+        </div>
+        <div class="row row-2" style="margin-top:20px">
+          <div class="card">
+            <div class="card-header"><span class="card-title">Predicted vs Actual — Today</span></div>
+            <div class="chart-wrap" style="height:240px"><canvas id="pred-chart"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">AI Recommendations</span></div>
+            <div class="alerts-list">
+              <div class="alert-item info"><span class="alert-icon">🤖</span><div class="alert-body"><div class="alert-title">Shift Washing Machine to 11PM</div><div class="alert-desc">Off-peak rates apply. Save approx. ₹38 per cycle.</div></div></div>
+              <div class="alert-item info"><span class="alert-icon">❄️</span><div class="alert-body"><div class="alert-title">Pre-cool room at 5PM (25°C)</div><div class="alert-desc">Peak pricing at 6–9PM. Pre-cooling saves ₹22 today.</div></div></div>
+              <div class="alert-item info"><span class="alert-icon">🚿</span><div class="alert-body"><div class="alert-title">Schedule geyser for 5:30AM</div><div class="alert-desc">Lowest grid load window. Estimated ₹15 saving.</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ DEVICES TAB ══ -->
+      <div class="tab-panel" id="tab-devices">
+        <h2 style="font-family:var(--font-head);margin-bottom:8px">🎛️ Device Control Panel</h2>
+        <p style="color:var(--text2);font-size:0.88rem;margin-bottom:24px">Click any device to toggle it on or off remotely.</p>
+        <div class="card">
+          <div class="card-header"><span class="card-title">All Devices</span><span class="card-badge">8 devices</span></div>
+          <div class="device-grid" id="device-grid"></div>
+        </div>
+      </div>
+
+      <!-- ══ SCHEDULE TAB ══ -->
+      <div class="tab-panel" id="tab-schedule">
+        <h2 style="font-family:var(--font-head);margin-bottom:8px">🗓️ Smart Schedule Optimizer</h2>
+        <p style="color:var(--text2);font-size:0.88rem;margin-bottom:24px">AI-optimized schedule to minimize cost and peak load.</p>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Today's AI Schedule</span><span class="card-badge">AI Generated</span></div>
+          <div class="schedule-list">
+            <div class="schedule-item"><span class="schedule-time">5:30 AM</span><span class="schedule-icon">🚿</span><div class="schedule-info"><div class="schedule-name">Water Heater ON</div><div class="schedule-detail">Lowest grid load · Saves ₹15 vs peak</div></div><span class="schedule-badge">Scheduled</span></div>
+            <div class="schedule-item"><span class="schedule-time">6:00 AM</span><span class="schedule-icon">🚿</span><div class="schedule-info"><div class="schedule-name">Water Heater OFF</div><div class="schedule-detail">Auto cutoff after 30 min</div></div><span class="schedule-badge">Scheduled</span></div>
+            <div class="schedule-item"><span class="schedule-time">5:00 PM</span><span class="schedule-icon">❄️</span><div class="schedule-info"><div class="schedule-name">AC Pre-Cool at 25°C</div><div class="schedule-detail">Before peak pricing window · Saves ₹22</div></div><span class="schedule-badge">Scheduled</span></div>
+            <div class="schedule-item"><span class="schedule-time">6:00 PM</span><span class="schedule-icon">❄️</span><div class="schedule-info"><div class="schedule-name">AC set to 28°C (peak mode)</div><div class="schedule-detail">Reduce load during peak pricing 6–9PM</div></div><span class="schedule-badge pending">Pending</span></div>
+            <div class="schedule-item"><span class="schedule-time">11:00 PM</span><span class="schedule-icon">🫧</span><div class="schedule-info"><div class="schedule-name">Washing Machine ON</div><div class="schedule-detail">Off-peak tariff · Saves ₹38 per cycle</div></div><span class="schedule-badge pending">Pending</span></div>
+            <div class="schedule-item"><span class="schedule-time">11:55 PM</span><span class="schedule-icon">🫧</span><div class="schedule-info"><div class="schedule-name">Washing Machine OFF</div><div class="schedule-detail">Auto cutoff after cycle completion</div></div><span class="schedule-badge pending">Pending</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ ALERTS TAB ══ -->
+      <div class="tab-panel" id="tab-alerts">
+        <h2 style="font-family:var(--font-head);margin-bottom:8px">🚨 Anomaly Detection & Alerts</h2>
+        <p style="color:var(--text2);font-size:0.88rem;margin-bottom:24px">AI monitors every device for abnormal patterns in real time.</p>
+        <div class="kpi-grid">
+          <div class="kpi-card"><div class="kpi-label">Active Alerts</div><div class="kpi-value warn">3</div></div>
+          <div class="kpi-card"><div class="kpi-label">Resolved Today</div><div class="kpi-value accent">7</div></div>
+          <div class="kpi-card"><div class="kpi-label">Anomaly Score</div><div class="kpi-value info">Moderate</div></div>
+          <div class="kpi-card"><div class="kpi-label">Last Scan</div><div class="kpi-value green">3s ago</div></div>
+        </div>
+        <div class="card" style="margin-top:20px">
+          <div class="card-header"><span class="card-title">Active Alerts</span><span class="card-badge danger">3</span></div>
+          <div class="alerts-list">
+            <div class="alert-item danger"><span class="alert-icon">🚨</span><div class="alert-body"><div class="alert-title">Water Heater Anomaly</div><div class="alert-desc">Drawing 2.4× its rated power. Possible heating element fault.</div><div class="alert-time">2 minutes ago · Bedroom circuit</div></div><button class="alert-dismiss" onclick="this.closest('.alert-item').remove()">✕</button></div>
+            <div class="alert-item warn"><span class="alert-icon">⚠️</span><div class="alert-body"><div class="alert-title">Monthly Bill Threshold (₹4,000)</div><div class="alert-desc">Current monthly projection is ₹3,840. 96% of your limit.</div><div class="alert-time">18 minutes ago</div></div><button class="alert-dismiss" onclick="this.closest('.alert-item').remove()">✕</button></div>
+            <div class="alert-item warn"><span class="alert-icon">🔌</span><div class="alert-body"><div class="alert-title">Vampire Load Detected</div><div class="alert-desc">TV standby consuming 18W continuously. Auto-cutoff recommended.</div><div class="alert-time">45 minutes ago · Living room</div></div><button class="alert-dismiss" onclick="this.closest('.alert-item').remove()">✕</button></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ WEEKLY REPORTS TAB ══ -->
+      <div class="tab-panel" id="tab-reports">
+        <h2 style="font-family:var(--font-head);margin-bottom:8px">📈 Weekly Reports & Goals</h2>
+        <p style="color:var(--text2);font-size:0.88rem;margin-bottom:24px">Track your savings and progress toward your monthly targets.</p>
+        <div class="row row-2">
+          <div class="card">
+            <div class="card-header"><span class="card-title">This Week Summary</span></div>
+            <div class="report-row"><span class="report-label">Total Consumption</span><span class="report-val">157 kWh</span></div>
+            <div class="report-row"><span class="report-label">vs Last Week</span><span class="report-val green">↓ 14 kWh (8.2%)</span></div>
+            <div class="report-row"><span class="report-label">Total Cost</span><span class="report-val">₹1,334</span></div>
+            <div class="report-row"><span class="report-label">Money Saved</span><span class="report-val green">₹213 saved</span></div>
+            <div class="report-row"><span class="report-label">CO₂ Emitted</span><span class="report-val">69 kg</span></div>
+            <div class="report-row"><span class="report-label">Peak Day</span><span class="report-val red">Saturday (28 kWh)</span></div>
+            <div class="report-row"><span class="report-label">Best Day</span><span class="report-val green">Tuesday (18 kWh)</span></div>
+            <div class="report-row"><span class="report-label">AI Optimizations</span><span class="report-val">14 actions taken</span></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Monthly Goals Progress</span></div>
+            <div class="goal-item">
+              <div class="goal-header"><span class="goal-label">Reduce Energy by 20%</span><span class="goal-pct">68%</span></div>
+              <div class="progress-bar-bg"><div class="progress-bar" data-width="68%" style="width:0"></div></div>
+              <div class="goal-meta">Target: 480 kWh · Current: 523 kWh · 12 days left</div>
+            </div>
+            <div class="goal-item">
+              <div class="goal-header"><span class="goal-label">Bill Under ₹3,500</span><span class="goal-pct">83%</span></div>
+              <div class="progress-bar-bg"><div class="progress-bar warn" data-width="83%" style="width:0"></div></div>
+              <div class="goal-meta">Projected ₹3,840 · Reduce daily by ₹23 to hit target</div>
+            </div>
+            <div class="goal-item">
+              <div class="goal-header"><span class="goal-label">Carbon: Under 100kg/month</span><span class="goal-pct">42%</span></div>
+              <div class="progress-bar-bg"><div class="progress-bar" data-width="42%" style="width:0"></div></div>
+              <div class="goal-meta">42 kg this month · On track ✅</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ CARBON TAB ══ -->
+      <div class="tab-panel" id="tab-carbon">
+        <h2 style="font-family:var(--font-head);margin-bottom:8px">🌱 Carbon Footprint Tracker</h2>
+        <p style="color:var(--text2);font-size:0.88rem;margin-bottom:24px">Your home's environmental impact, measured in real time.</p>
+        <div class="kpi-grid">
+          <div class="kpi-card"><div class="kpi-label">CO₂ Today</div><div class="kpi-value green">1.4 kg</div><div class="kpi-change up">↓ 22% below avg</div></div>
+          <div class="kpi-card"><div class="kpi-label">CO₂ This Month</div><div class="kpi-value accent">42 kg</div></div>
+          <div class="kpi-card"><div class="kpi-label">Equivalent Trees</div><div class="kpi-value info">3.5 trees/yr</div></div>
+          <div class="kpi-card"><div class="kpi-label">Green Score</div><div class="kpi-value green">B+</div></div>
+        </div>
+        <div class="row row-2" style="margin-top:20px">
+          <div class="card" style="text-align:center">
+            <div class="card-header"><span class="card-title">Today's Carbon Meter</span></div>
+            <div style="padding:20px 0">
+              <div class="carbon-circle" style="width:180px;height:180px;margin:0 auto 20px">
+                <div class="carbon-inner"><div class="carbon-val" style="font-size:1.4rem">1.4 kg</div><div class="carbon-unit">CO₂ emitted</div></div>
+              </div>
+              <div class="carbon-compare" style="font-size:0.9rem">Avg household: 5.8 kg/day<br/>You emit <span>76% less</span> than average</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Carbon by Device</span></div>
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <div><div style="display:flex;justify-content:space-between;font-size:0.83rem;margin-bottom:4px"><span>❄️ Air Conditioner</span><span style="color:var(--accent)">0.61 kg</span></div><div class="progress-bar-bg"><div class="progress-bar" data-width="44%" style="width:0"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:0.83rem;margin-bottom:4px"><span>🚿 Water Heater</span><span style="color:var(--warn)">0.29 kg</span></div><div class="progress-bar-bg"><div class="progress-bar warn" data-width="21%" style="width:0"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:0.83rem;margin-bottom:4px"><span>📺 TV / Display</span><span style="color:var(--accent2)">0.18 kg</span></div><div class="progress-bar-bg"><div class="progress-bar" data-width="13%" style="width:0;background:var(--accent2)"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:0.83rem;margin-bottom:4px"><span>🧊 Refrigerator</span><span style="color:var(--text2)">0.15 kg</span></div><div class="progress-bar-bg"><div class="progress-bar" data-width="11%" style="width:0;background:#8a9bb0"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:0.83rem;margin-bottom:4px"><span>💡 Lights + Others</span><span style="color:var(--text2)">0.17 kg</span></div><div class="progress-bar-bg"><div class="progress-bar" data-width="12%" style="width:0;background:#4a5568"></div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ POWER WASTE ANALYZER TAB ══ -->
+      <div class="tab-panel" id="tab-waste">
+        <h2 style="font-family:var(--font-head);margin-bottom:4px">🔥 Power Waste Analyzer</h2>
+        <p style="color:var(--text2);font-size:0.88rem;margin-bottom:24px">
+          AI detected these devices are consuming more power than they should. Here's exactly what it's costing you — and how to fix each one.
+        </p>
+
+        <!-- WASTE KPIs -->
+        <div class="kpi-grid" style="margin-bottom:28px">
+          <div class="kpi-card">
+            <div class="kpi-label">Total Wasted Power</div>
+            <div class="kpi-value danger" id="waste-kpi-w">1,340 W</div>
+            <div class="kpi-change down">↑ Excess being drawn right now</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Money Wasted Today</div>
+            <div class="kpi-value warn" id="waste-kpi-day">₹91</div>
+            <div class="kpi-change down">↑ If issues not fixed today</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Projected Monthly Loss</div>
+            <div class="kpi-value danger" id="waste-kpi-month">₹2,730</div>
+            <div class="kpi-change down">↑ At current waste rate</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Potential Monthly Saving</div>
+            <div class="kpi-value green" id="waste-kpi-save">₹2,730</div>
+            <div class="kpi-change up">↑ If all issues are fixed today</div>
+          </div>
+        </div>
+
+        <!-- ACTUAL VS OPTIMAL GRAPH -->
+        <div class="card" style="margin-bottom:24px">
+          <div class="card-header">
+            <span class="card-title">Actual Power vs Optimal Power — Today (24 hrs)</span>
+            <span class="card-badge danger" id="waste-chart-badge">Waste Highlighted</span>
+          </div>
+          <p style="font-size:0.8rem;color:var(--text2);margin-bottom:16px">
+            The <span style="color:#ff4757;font-weight:700">red shaded area</span> is electricity you're paying for but shouldn't be.
+            The <span style="color:#00e5a0;font-weight:700">green line</span> is what your home should consume at optimal efficiency.
+            As you fix issues below, watch the red area shrink in real time.
+          </p>
+          <div class="chart-wrap" style="height:280px">
+            <canvas id="waste-chart"></canvas>
+          </div>
+          <div class="waste-legend">
+            <div class="wl-item"><span class="wl-dot" style="background:#ff4757"></span> Actual Power (with waste)</div>
+            <div class="wl-item"><span class="wl-dot" style="background:#00e5a0"></span> Optimal Power (no waste)</div>
+            <div class="wl-item"><span class="wl-dot" style="background:rgba(255,71,87,0.2);border:1px dashed #ff4757"></span> Wasted Energy Zone</div>
+          </div>
+          <!-- Savings summary bar that appears as fixes happen -->
+          <div class="waste-savings-bar" id="waste-savings-bar" style="display:none">
+            <span>✅ Fixes applied:</span>
+            <span id="waste-savings-text"></span>
+          </div>
+        </div>
+
+        <!-- DEVICE WASTE TABLE -->
+        <div class="card" style="margin-bottom:24px">
+          <div class="card-header">
+            <span class="card-title">Devices Wasting Power — Breakdown</span>
+            <span class="card-badge danger" id="waste-device-badge">4 Devices Flagged</span>
+          </div>
+          <div class="waste-table-header">
+            <span>Device</span>
+            <span>Actual</span>
+            <span>Optimal</span>
+            <span>Wasted</span>
+            <span>Cost/Day</span>
+            <span>Cost/Month</span>
+            <span>Status</span>
+          </div>
+          <div class="waste-device-list" id="waste-device-list"></div>
+        </div>
+
+        <!-- FIX GUIDE -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">🛠️ AI Fix Guide — Step by Step</span>
+            <span class="card-badge" id="fix-guide-badge">4 Issues · Est. Save ₹2,730/mo</span>
+          </div>
+          <p style="font-size:0.8rem;color:var(--text2);margin-bottom:18px">
+            Follow these steps to fix each device. Sorted by highest savings first. Mark as fixed once done — watch the graph update live.
+          </p>
+          <div class="fix-list" id="fix-list"></div>
+        </div>
+
+      </div>
+      <!-- ══ END POWER WASTE ANALYZER ══ -->
+
+    </div>
+  </div>
+
+  <script src="../js/dashboard.js"></script>
+</body>
+</html>
